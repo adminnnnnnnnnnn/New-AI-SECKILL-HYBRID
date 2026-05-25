@@ -1,0 +1,162 @@
+services:
+  # MySQL数据库
+  mysql:
+    image: docker.m.daocloud.io/library/mysql:8.0
+    container_name: seckill-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root123456
+      MYSQL_DATABASE: seckill
+      TZ: Asia/Shanghai
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./seckill-parent/schema.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysql-data:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    networks:
+      - seckill-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis缓存
+  redis:
+    image: docker.m.daocloud.io/library/redis:7-alpine
+    container_name: seckill-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - seckill-network
+
+  # Nacos服务注册与配置中心
+  nacos:
+    image: docker.m.daocloud.io/nacos/nacos-server:v2.3.0
+    container_name: seckill-nacos
+    environment:
+      MODE: standalone
+      SPRING_DATASOURCE_PLATFORM: mysql
+      MYSQL_SERVICE_HOST: seckill-mysql
+      MYSQL_SERVICE_PORT: 3306
+      MYSQL_SERVICE_USER: root
+      MYSQL_SERVICE_PASSWORD: root123456
+      MYSQL_SERVICE_DB_NAME: seckill
+      MYSQL_SERVICE_PARAMS: characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&allowPublicKeyRetrieval=true
+      JVM_XMS: 512m
+      JVM_XMX: 512m
+      TZ: Asia/Shanghai
+    ports:
+      - "8848:8848"
+      - "9848:9848"
+    volumes:
+      - nacos-data:/home/nacos/data
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - seckill-network
+
+  # RocketMQ NameServer
+  rocketmq-namesrv:
+    image: docker.m.daocloud.io/apache/rocketmq:5.1.4
+    container_name: rocketmq-namesrv
+    ports:
+      - "9876:9876"
+    command: sh mqnamesrv
+    networks:
+      - seckill-network
+
+  # RocketMQ Broker
+  rocketmq-broker:
+    image: docker.m.daocloud.io/apache/rocketmq:5.1.4
+    container_name: rocketmq-broker
+    ports:
+      - "10911:10911"
+      - "10909:10909"
+    environment:
+      NAMESRV_ADDR: rocketmq-namesrv:9876
+    command: sh mqbroker -n rocketmq-namesrv:9876
+    depends_on:
+      - rocketmq-namesrv
+    volumes:
+      - rocketmq-broker-store:/home/rocketmq/store
+      - ./docker/rocketmq/broker.conf:/home/rocketmq/rocketmq-5.1.4/conf/broker.conf
+    networks:
+      - seckill-network
+
+  # RocketMQ Console (可视化管理界面)
+  rocketmq-console:
+    image: docker.m.daocloud.io/apacherocketmq/rocketmq-dashboard:latest
+    container_name: rocketmq-console
+    ports:
+      - "8081:8080"
+    environment:
+      JAVA_OPTS: -Drocketmq.namesrv.addr=rocketmq-namesrv:9876 
+    depends_on:
+      - rocketmq-namesrv
+    networks:
+      - seckill-network
+
+  # Seata分布式事务服务器
+  seata-server:
+    image: docker.m.daocloud.io/seataio/seata-server:2.0.0
+    container_name: seata-server
+    ports:
+      - "8091:8091"
+    environment:
+      SEATA_PORT: 8091
+      STORE_MODE: file
+    networks:
+      - seckill-network
+  # Python AI Agent服务
+  python-ai-agent:
+    build:
+      context: ./python-ai-agent
+      dockerfile: Dockerfile
+    container_name: python-ai-agent
+    ports:
+      - "8000:8000"
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - DASHSCOPE_API_KEY=${DASHSCOPE_API_KEY:-sk-a7db72f5eb2d45e8ba1692da12728c06}
+    depends_on:
+      - redis
+    networks:
+      - seckill-network
+
+  # Java网关服务
+  gateway:
+    build:
+      context: ./seckill-parent
+      dockerfile: ../docker/gateway/Dockerfile
+    container_name: seckill-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - NACOS_SERVER_ADDR=nacos:8848
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - ROCKETMQ_NAMESRV_ADDR=rocketmq-namesrv:9876
+      - SEATA_SERVER_ADDR=seata-server:8091
+    depends_on:
+      - nacos
+      - redis
+      - rocketmq-namesrv
+      - seata-server
+    networks:
+      - seckill-network
+
+volumes:
+  mysql-data:
+  redis-data:
+  nacos-data:
+  rocketmq-broker-store:
+
+networks:
+  seckill-network:
+    driver: bridge

@@ -1,0 +1,56 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: seckill-seckill-service
+  redis:
+    host: localhost
+    port: 6379
+    database: 0
+    timeout: 3000ms
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+        register-enabled: false  # 暂时禁用注册，仅用于配置中心
+
+seckill:
+  queue:
+    capacity: 10000
+    consumer-threads: 10
+
+# 合并日志配置到单个 logging.level 节点
+
+# ==================== AI Agent 配置 ====================
+ai:
+  agent:
+    # Python AI服务地址（直连方式）
+    url: http://localhost:8000
+    # 如果使用Nacos服务发现，可以注释掉url，使用服务名
+    # name: python-ai-agent
+
+# ==================== Feign 配置 ====================
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 10000     # 连接超时10秒
+        readTimeout: 120000       # 读取超时120秒（适应AI分析的长时间处理）
+        loggerLevel: basic
+  hystrix:
+    enabled: true                 # 启用熔断
+  circuitbreaker:
+    enabled: true                 # 启用断路器
+
+# ==================== 日志配置（添加 Feign 调试日志）====================
+logging:
+  level:
+    com.seckill: DEBUG
+    com.seckill.seckill.feign: DEBUG  # 查看Feign调用日志
+    com.seckill.seckill.controller: DEBUG

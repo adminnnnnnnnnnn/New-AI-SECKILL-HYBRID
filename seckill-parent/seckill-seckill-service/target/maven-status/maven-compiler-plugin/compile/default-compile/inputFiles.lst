@@ -1,0 +1,9 @@
+C:\Users\dell\Desktop\ai-seckill-hybrid\seckill-parent\seckill-seckill-service\src\main\java\com\seckill\seckill\service\SeckillService.java
+C:\Users\dell\Desktop\ai-seckill-hybrid\seckill-parent\seckill-seckill-service\src\main\java\com\seckill\seckill\config\RedisConfig.java
+C:\Users\dell\Desktop\ai-seckill-hybrid\seckill-parent\seckill-seckill-service\src\main\java\com\seckill\seckill\controller\SeckillAIController.java
+C:\Users\dell\Desktop\ai-seckill-hybrid\seckill-parent\seckill-seckill-service\src\main\java\com\seckill\seckill\feign\OrderFeignClient.java
+C:\Users\dell\Desktop\ai-seckill-hybrid\seckill-parent\seckill-seckill-service\src\main\java\com\seckill\seckill\feign\AIAgentFeignClient.java
+C:\Users\dell\Desktop\ai-seckill-hybrid\seckill-parent\seckill-seckill-service\src\main\java\com\seckill\seckill\config\FeignConfig.java
+C:\Users\dell\Desktop\ai-seckill-hybrid\seckill-parent\seckill-seckill-service\src\main\java\com\seckill\seckill\feign\AIAgentCircuitService.java
+C:\Users\dell\Desktop\ai-seckill-hybrid\seckill-parent\seckill-seckill-service\src\main\java\com\seckill\seckill\SeckillServiceApplication.java
+C:\Users\dell\Desktop\ai-seckill-hybrid\seckill-parent\seckill-seckill-service\src\main\java\com\seckill\seckill\controller\SeckillController.java

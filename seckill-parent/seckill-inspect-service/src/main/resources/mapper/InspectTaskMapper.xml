@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seckill.inspect.mapper.InspectTaskMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.seckill.inspect.entity.InspectTask">
+        <id column="id" property="id" />
+        <result column="task_no" property="taskNo" />
+        <result column="order_no" property="orderNo" />
+        <result column="delivery_no" property="deliveryNo" />
+        <result column="warehouse_id" property="warehouseId" />
+        <result column="sku_id" property="skuId" />
+        <result column="quantity" property="quantity" />
+        <result column="status" property="status" />
+        <result column="inspector_id" property="inspectorId" />
+        <result column="inspect_time" property="inspectTime" />
+        <result column="result" property="result" />
+        <result column="remark" property="remark" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, task_no, order_no, delivery_no, warehouse_id, sku_id, 
+        quantity, status, inspector_id, inspect_time, result, remark, 
+        create_time, update_time
+    </sql>
+
+    <!-- 根据任务编号查询 -->
+    <select id="selectByTaskNo" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM inspect_task
+        WHERE task_no = #{taskNo}
+    </select>
+
+    <!-- 根据订单号查询验收任务 -->
+    <select id="selectByOrderNo" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM inspect_task
+        WHERE order_no = #{orderNo}
+    </select>
+
+    <!-- 查询待验收任务 -->
+    <select id="selectPendingTasks" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM inspect_task
+        WHERE status = 0
+        ORDER BY create_time ASC
+    </select>
+
+    <!-- 查询超期未验收任务 -->
+    <select id="selectOverdueTasks" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM inspect_task
+        WHERE status = 0
+          AND create_time &lt; DATE_SUB(NOW(), INTERVAL 48 HOUR)
+    </select>
+
+    <!-- 更新验收状态 -->
+    <update id="updateStatus">
+        UPDATE inspect_task
+        SET status = #{status},
+            inspector_id = #{inspectorId},
+            inspect_time = NOW(),
+            result = #{result},
+            remark = #{remark},
+            update_time = NOW()
+        WHERE id = #{id}
+    </update>
+
+</mapper>

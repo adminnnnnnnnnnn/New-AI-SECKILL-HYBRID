@@ -1,0 +1,9 @@
+com\seckill\common\vo\SeckillRequest.class
+com\seckill\common\config\GlobalExceptionHandler.class
+com\seckill\common\exception\BusinessException.class
+com\seckill\common\vo\Result.class
+com\seckill\common\vo\SeckillResult.class
+com\seckill\common\entity\Product.class
+com\seckill\common\entity\Order.class
+com\seckill\common\entity\Stock.class
+com\seckill\common\result\Result.class

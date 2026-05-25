@@ -1,0 +1,18 @@
+{
+  "seckill_intro": {
+    "keywords": [
+      "秒杀",
+      "秒杀系统",
+      "高并发"
+    ],
+    "content": "秒杀系统是高并发场景下的典型应用，核心策略包括：Redis预减库存、消息队列削峰、限流防刷、异步下单。"
+  },
+  "redis_stock": {
+    "keywords": [
+      "库存",
+      "Redis",
+      "预减"
+    ],
+    "content": "Redis预减库存：秒杀前将库存加载到Redis，使用DECR原子操作扣减，避免数据库压力。"
+  }
+}

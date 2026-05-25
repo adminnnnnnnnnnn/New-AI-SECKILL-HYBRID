@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seckill.order.mapper.OrderMapper">
+
+    <!-- 统计指定用户对指定商品的未支付订单数量 -->
+    <select id="countUnpaidOrders" resultType="int">
+        SELECT COUNT(*)
+        FROM orders
+        WHERE user_id = #{userId}
+          AND product_id = #{productId}
+          AND status = 0
+    </select>
+
+</mapper>

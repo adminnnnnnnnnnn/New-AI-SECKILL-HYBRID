@@ -1,0 +1,14 @@
+com\seckill\seckill\feign\AIAgentCircuitService.class
+com\seckill\seckill\feign\AIAgentFeignClient.class
+com\seckill\seckill\service\SeckillService.class
+com\seckill\seckill\config\FeignConfig$2.class
+com\seckill\seckill\service\SeckillService$Consumer.class
+com\seckill\seckill\config\FeignConfig$1.class
+com\seckill\seckill\config\RedisConfig.class
+com\seckill\seckill\feign\OrderFeignClient.class
+com\seckill\seckill\service\SeckillService$SeckillTask.class
+com\seckill\seckill\config\FeignConfig.class
+com\seckill\seckill\SeckillServiceApplication.class
+com\seckill\seckill\controller\SeckillAIController.class
+com\seckill\seckill\controller\SeckillController.class
+com\seckill\seckill\feign\OrderFeignFallback.class

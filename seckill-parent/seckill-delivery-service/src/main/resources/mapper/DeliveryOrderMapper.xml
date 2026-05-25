@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seckill.delivery.mapper.DeliveryOrderMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.seckill.delivery.entity.DeliveryOrder">
+        <id column="id" property="id" />
+        <result column="delivery_no" property="deliveryNo" />
+        <result column="order_no" property="orderNo" />
+        <result column="warehouse_id" property="warehouseId" />
+        <result column="status" property="status" />
+        <result column="carrier" property="carrier" />
+        <result column="tracking_no" property="trackingNo" />
+        <result column="receiver_name" property="receiverName" />
+        <result column="receiver_phone" property="receiverPhone" />
+        <result column="receiver_address" property="receiverAddress" />
+        <result column="delivery_time" property="deliveryTime" />
+        <result column="sign_time" property="signTime" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, delivery_no, order_no, warehouse_id, status, carrier, 
+        tracking_no, receiver_name, receiver_phone, receiver_address, 
+        delivery_time, sign_time, create_time, update_time
+    </sql>
+
+    <!-- 根据配送单号查询 -->
+    <select id="selectByDeliveryNo" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM delivery_order
+        WHERE delivery_no = #{deliveryNo}
+    </select>
+
+    <!-- 根据订单号查询配送单 -->
+    <select id="selectByOrderNo" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM delivery_order
+        WHERE order_no = #{orderNo}
+    </select>
+
+    <!-- 查询配送中的订单 -->
+    <select id="selectDeliveringOrders" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM delivery_order
+        WHERE status IN (3, 4, 5)
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 更新配送状态 -->
+    <update id="updateStatus">
+        UPDATE delivery_order
+        SET status = #{status},
+            update_time = NOW()
+        WHERE id = #{id}
+    </update>
+
+</mapper>
