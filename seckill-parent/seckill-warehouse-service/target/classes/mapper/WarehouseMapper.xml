@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seckill.warehouse.mapper.WarehouseMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.seckill.warehouse.entity.Warehouse">
+        <id column="id" property="id" />
+        <result column="warehouse_code" property="warehouseCode" />
+        <result column="warehouse_name" property="warehouseName" />
+        <result column="warehouse_type" property="warehouseType" />
+        <result column="address" property="address" />
+        <result column="manager" property="manager" />
+        <result column="phone" property="phone" />
+        <result column="capacity" property="capacity" />
+        <result column="status" property="status" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, warehouse_code, warehouse_name, warehouse_type, address, 
+        manager, phone, capacity, status, create_time, update_time
+    </sql>
+
+    <!-- 根据仓库编码查询 -->
+    <select id="selectByWarehouseCode" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM warehouse
+        WHERE warehouse_code = #{warehouseCode}
+    </select>
+
+    <!-- 查询所有正常状态的仓库 -->
+    <select id="selectActiveWarehouses" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM warehouse
+        WHERE status = 1
+    </select>
+
+    <!-- 查询仓库库存汇总 -->
+    <select id="selectWarehouseInventorySummary" resultType="map">
+        SELECT 
+            w.warehouse_name AS warehouseName,
+            COUNT(i.id) AS skuCount,
+            SUM(i.total_quantity) AS totalQuantity,
+            SUM(i.available_quantity) AS availableQuantity
+        FROM warehouse w
+        LEFT JOIN sku_inventory i ON w.id = i.warehouse_id
+        WHERE w.status = 1
+        GROUP BY w.id, w.warehouse_name
+    </select>
+
+</mapper>

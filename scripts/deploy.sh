@@ -1,6 +1,6 @@
 #!/bin/bash
 # ========================================
-# AI-Seckill-Hybrid 一键部署脚本
+# AI-Seckill-Hybrid 一键部署脚�?
 # 在腾讯云服务器上执行
 # ========================================
 
@@ -10,19 +10,19 @@ PROJECT_DIR="/opt/ai-seckill"
 SERVER_IP=$(curl -s ifconfig.me)
 
 echo "========================================="
-echo "  AI-Seckill-Hybrid 一键部署"
+echo "  AI-Seckill-Hybrid 一键部�?
 echo "========================================="
 echo "服务器IP: $SERVER_IP"
 echo ""
 
 cd $PROJECT_DIR
 
-# 1. 拉取最新代码
-echo "[1/6] 拉取最新代码..."
-git pull origin main || echo "警告: Git拉取失败，使用现有代码"
+# 1. 拉取最新代�?
+echo "[1/6] 拉取最新代�?.."
+git pull origin main || echo "警告: Git拉取失败，使用现有代�?
 
-# 2. 停止旧服务
-echo "[2/6] 停止旧服务..."
+# 2. 停止旧服�?
+echo "[2/6] 停止旧服�?.."
 docker-compose down || true
 
 # 3. 启动基础设施
@@ -33,11 +33,11 @@ docker-compose up -d mysql redis nacos
 echo "等待MySQL就绪..."
 sleep 10
 
-# 4. 初始化数据库（如果尚未初始化）
+# 4. 初始化数据库（如果尚未初始化�?
 echo "[4/6] 检查数据库..."
-if ! docker exec seckill-mysql mysql -uroot -proot123456 -e "USE seckill;" 2>/dev/null; then
+if ! docker exec seckill-mysql mysql -uroot -pyour_mysql_password -e "USE seckill;" 2>/dev/null; then
     echo "初始化数据库..."
-    docker exec -i seckill-mysql mysql -uroot -proot123456 seckill < schema.sql
+    docker exec -i seckill-mysql mysql -uroot -pyour_mysql_password seckill < schema.sql
 else
     echo "数据库已存在，跳过初始化"
 fi
@@ -48,7 +48,7 @@ cd seckill-parent
 mvn clean install -DskipTests -q
 
 # 6. 启动所有微服务
-echo "[6/6] 启动微服务..."
+echo "[6/6] 启动微服�?.."
 cd ..
 
 # 创建screen会话运行各个服务
@@ -88,20 +88,20 @@ screen -dmS frontend bash -c "cd $PROJECT_DIR/seckill-frontend && npm run dev --
 
 echo ""
 echo "========================================="
-echo "  部署完成！"
+echo "  部署完成�?
 echo "========================================="
 echo ""
-echo "访问地址："
+echo "访问地址�?
 echo "  前端界面: http://$SERVER_IP:5173"
 echo "  API网关:  http://$SERVER_IP:8080"
 echo "  Nacos:    http://$SERVER_IP:8848/nacos (nacos/nacos)"
 echo "  Python AI: http://$SERVER_IP:8000"
 echo ""
 echo "查看服务状态："
-echo "  screen -ls  # 查看所有会话"
+echo "  screen -ls  # 查看所有会�?
 echo "  screen -r gateway  # 连接到Gateway日志"
 echo ""
-echo "停止服务："
+echo "停止服务�?
 echo "  cd $PROJECT_DIR && ./stop.sh"
 echo ""
 echo "========================================="

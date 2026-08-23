@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seckill.inventory.mapper.SkuInventoryMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.seckill.inventory.entity.SkuInventory">
+        <id column="id" property="id" />
+        <result column="warehouse_id" property="warehouseId" />
+        <result column="sku_id" property="skuId" />
+        <result column="total_quantity" property="totalQuantity" />
+        <result column="available_quantity" property="availableQuantity" />
+        <result column="occupied_quantity" property="occupiedQuantity" />
+        <result column="locked_quantity" property="lockedQuantity" />
+        <result column="safety_stock" property="safetyStock" />
+        <result column="version" property="version" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, warehouse_id, sku_id, total_quantity, available_quantity, 
+        occupied_quantity, locked_quantity, safety_stock, version, 
+        create_time, update_time
+    </sql>
+
+    <!-- 根据仓库ID和SKU ID查询库存 -->
+    <select id="selectByWarehouseAndSku" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM sku_inventory
+        WHERE warehouse_id = #{warehouseId} AND sku_id = #{skuId}
+    </select>
+
+    <!-- 根据SKU ID查询所有仓库库存 -->
+    <select id="selectBySkuId" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM sku_inventory
+        WHERE sku_id = #{skuId}
+    </select>
+
+    <!-- 查询库存低于安全阈值的商品 -->
+    <select id="selectLowStockList" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM sku_inventory
+        WHERE available_quantity &lt;= safety_stock
+    </select>
+
+    <!-- 更新库存(乐观锁) -->
+    <update id="updateStock">
+        UPDATE sku_inventory
+        SET available_quantity = available_quantity - #{decreaseQuantity},
+            occupied_quantity = occupied_quantity + #{decreaseQuantity},
+            version = version + 1,
+            update_time = NOW()
+        WHERE id = #{id}
+          AND version = #{version}
+          AND available_quantity >= #{decreaseQuantity}
+    </update>
+
+</mapper>

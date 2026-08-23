@@ -8,13 +8,13 @@ REM ========================================
 echo.
 echo =========================================
 echo   AI-Seckill-Hybrid 代码上传工具
-echo   目标服务器: 182.254.244.202
+echo   目标服务器: YOUR_SERVER_IP
 echo =========================================
 echo.
 
-set SERVER_IP=182.254.244.202
+set SERVER_IP=YOUR_SERVER_IP
 set SERVER_USER=root
-set PROJECT_DIR=c:\Users\dell\Desktop\ai-seckill-hybrid
+set PROJECT_DIR=C:\Users\YOUR_USERNAME\Desktop\ai-seckill-hybrid
 
 echo [1/4] 检查必要工具...
 where scp >nul 2>&1

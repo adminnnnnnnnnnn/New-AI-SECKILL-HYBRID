@@ -2,8 +2,8 @@
 
 ## 📋 目录
 1. [AI Agent在前端的展现方式](#1-ai-agent在前端的展现方式)
-2. [从前端到后端的完整调用链路](#2-从前端到后端的完整调用链路)
-3. [AI Agent的核心作用](#3-ai-agent的核心作用)
+2. [从前端到后端的完整调用链路](#2-从前端到后端的完整调用链�?
+3. [AI Agent的核心作用](#3-ai-agent的核心作�?
 4. [技术架构图](#4-技术架构图)
 5. [代码示例与数据流](#5-代码示例与数据流)
 
@@ -13,7 +13,7 @@
 
 ### 1.1 前端页面位置
 
-AI智能分析助手直接集成在**首页（HomeView.vue）**中，位于页面的底部区域。
+AI智能分析助手直接集成�?*首页（HomeView.vue�?*中，位于页面的底部区域�?
 
 **文件路径**: `seckill-frontend/src/views/HomeView.vue`
 
@@ -28,12 +28,12 @@ AI智能分析助手直接集成在**首页（HomeView.vue）**中，位于页�
     </div>
   </template>
   
-  <!-- 1. 问题输入框 -->
+  <!-- 1. 问题输入�?-->
   <el-input
     v-model="aiQuestion"
     type="textarea"
     :rows="3"
-    placeholder="例如: 当前秒杀成功率如何?库存还剩多少?有什么优化建议?"
+    placeholder="例如: 当前秒杀成功率如�?库存还剩多少?有什么优化建�?"
   />
   
   <!-- 2. 分析按钮 -->
@@ -43,10 +43,10 @@ AI智能分析助手直接集成在**首页（HomeView.vue）**中，位于页�
     :loading="aiLoading"
     style="margin-top: 10px"
   >
-    开始分析
+    开始分�?
   </el-button>
   
-  <!-- 3. AI回答展示区 -->
+  <!-- 3. AI回答展示�?-->
   <el-alert
     v-if="aiResult"
     :title="aiResult.answer"
@@ -57,8 +57,8 @@ AI智能分析助手直接集成在**首页（HomeView.vue）**中，位于页�
   >
     <template #default>
       <div class="ai-result">
-        <p><strong>置信度:</strong> {{ (aiResult.confidence * 100).toFixed(1) }}%</p>
-        <p><strong>反思应用:</strong> {{ aiResult.reflection_applied ? '是' : '否' }}</p>
+        <p><strong>置信�?</strong> {{ (aiResult.confidence * 100).toFixed(1) }}%</p>
+        <p><strong>反思应�?</strong> {{ aiResult.reflection_applied ? '�? : '�? }}</p>
         <el-divider />
         <p><strong>数据快照:</strong></p>
         <pre>{{ JSON.stringify(aiResult.data_snapshot, null, 2) }}</pre>
@@ -70,53 +70,53 @@ AI智能分析助手直接集成在**首页（HomeView.vue）**中，位于页�
 
 ### 1.3 用户可以问的问题示例
 
-- ✅ "当前秒杀成功率如何？"
-- ✅ "库存还剩多少？"
-- ✅ "什么时候是峰值？"
-- ✅ "有什么优化建议？"
-- ✅ "iPhone 15的库存情况？"
+- �?"当前秒杀成功率如何？"
+- �?"库存还剩多少�?
+- �?"什么时候是峰值？"
+- �?"有什么优化建议？"
+- �?"iPhone 15的库存情况？"
 
 ---
 
-## 2. 从前端到后端的完整调用链路
+## 2. 从前端到后端的完整调用链�?
 
-### 2.1 调用流程图
+### 2.1 调用流程�?
 
 ```
 用户提问
-   ↓
-[前端] HomeView.vue → handleAIAnalyze()
-   ↓
-[前端Store] seckill.ts → aiAnalyze(question)
-   ↓
+   �?
+[前端] HomeView.vue �?handleAIAnalyze()
+   �?
+[前端Store] seckill.ts �?aiAnalyze(question)
+   �?
 [Axios请求] POST /api/ai/analyze
-   ↓
-[Vite代理] http://localhost:3000/api → http://localhost:8080
-   ↓
-[Gateway网关] 路由转发到 seckill-service (端口8084)
-   ↓
+   �?
+[Vite代理] http://localhost:3000/api �?http://localhost:8080
+   �?
+[Gateway网关] 路由转发�?seckill-service (端口8084)
+   �?
 [Java后端] SeckillAIController.getAIAdvice()
-   ↓
+   �?
 [熔断保护] AIAgentCircuitService.analyze()
-   ↓
+   �?
 [Feign客户端] AIAgentFeignClient.analyze()
-   ↓
+   �?
 [HTTP调用] POST http://localhost:8000/api/seckill/analyze
-   ↓
+   �?
 [Python AI] FastAPI服务接收请求
-   ↓
+   �?
 [AI大脑] agent_brain.think(question, context)
-   ↓
-[Redis读取] 实时库存、统计数据
-   ↓
+   �?
+[Redis读取] 实时库存、统计数�?
+   �?
 [LLM推理] DashScope qwen-plus模型生成答案
-   ↓
-[自我反思] 如果置信度<0.7，触发self_reflect()
-   ↓
+   �?
+[自我反思] 如果置信�?0.7，触发self_reflect()
+   �?
 [返回结果] JSON格式响应
-   ↓
-[逐层返回] Python → Java → Gateway → 前端
-   ↓
+   �?
+[逐层返回] Python �?Java �?Gateway �?前端
+   �?
 [前端展示] el-alert显示AI回答
 ```
 
@@ -129,7 +129,7 @@ AI智能分析助手直接集成在**首页（HomeView.vue）**中，位于页�
 ```typescript
 const handleAIAnalyze = async () => {
   if (!aiQuestion.value.trim()) {
-    ElMessage.warning('请输入问题')
+    ElMessage.warning('请输入问�?)
     return
   }
   
@@ -156,7 +156,7 @@ async function aiAnalyze(question: string) {
   try {
     const res = await request.post('/ai/analyze', {
       question,
-      enable_reflection: true  // 启用AI自我反思
+      enable_reflection: true  // 启用AI自我反�?
     })
     return res.data
   } catch (error) {
@@ -227,7 +227,7 @@ public Result<String> getAIAdvice(@RequestParam String question) {
     request.put("question", question);
     request.put("enable_reflection", "true");
     
-    // 调用Python AI服务（通过Feign + 熔断保护）
+    // 调用Python AI服务（通过Feign + 熔断保护�?
     Map<String, Object> response = aiAgentClient.analyze(request);
     
     // 解析响应
@@ -283,7 +283,7 @@ public class AIAgentCircuitService {
                 fallback.put("code", 503);
                 fallback.put("message", "AI服务暂不可用，请稍后重试");
                 Map<String, Object> data = new HashMap<>();
-                data.put("answer", "抱歉，AI分析服务当前不可用...");
+                data.put("answer", "抱歉，AI分析服务当前不可�?..");
                 data.put("confidence", 0.3);
                 data.put("fallback", true);
                 fallback.put("data", data);
@@ -301,7 +301,7 @@ public class AIAgentCircuitService {
 ```python
 @router.post("/analyze")
 async def analyze_seckill(request: QuestionRequest):
-    """AI分析秒杀问题 - Java服务调用此接口"""
+    """AI分析秒杀问题 - Java服务调用此接�?""
     await redis_client.connect()
     
     # 获取实时数据
@@ -309,20 +309,20 @@ async def analyze_seckill(request: QuestionRequest):
     stock2 = await redis_client.get_seckill_stock(2)
     stats = await redis_client.get_seckill_stats()
     
-    # 构建上下文
+    # 构建上下�?
     context = f"""
-    当前秒杀实时数据：
+    当前秒杀实时数据�?
     - iPhone15库存: {stock1}
     - 华为Mate60库存: {stock2}
-    - 秒杀成功数: {stats['success']}
-    - 秒杀失败数: {stats['fail']}
-    - 成功率: {(stats['success']/stats['total']*100) if stats['total']>0 else 0:.1f}%
+    - 秒杀成功�? {stats['success']}
+    - 秒杀失败�? {stats['fail']}
+    - 成功�? {(stats['success']/stats['total']*100) if stats['total']>0 else 0:.1f}%
     """
     
-    # AI思考（调用LLM）
+    # AI思考（调用LLM�?
     answer, confidence = agent_brain.think(request.question, context)
     
-    # 低置信度时自我反思
+    # 低置信度时自我反�?
     if request.enable_reflection and confidence < 0.7:
         answer = agent_brain.self_reflect(request.question, answer)
         confidence = min(confidence + 0.2, 0.95)
@@ -344,24 +344,24 @@ async def analyze_seckill(request: QuestionRequest):
 
 #### Step 10: AI大脑推理
 
-**文件**: `python-ai-agent/app/agent/brain.py`（伪代码示意）
+**文件**: `python-ai-agent/app/agent/brain.py`（伪代码示意�?
 
 ```python
 class AgentBrain:
     def think(self, question: str, context: str) -> tuple[str, float]:
         """使用LLM进行推理"""
         prompt = f"""
-        你是一个秒杀系统AI助手。
+        你是一个秒杀系统AI助手�?
         
-        实时数据：
+        实时数据�?
         {context}
         
         用户问题：{question}
         
-        请基于以上数据给出专业分析和建议。
+        请基于以上数据给出专业分析和建议�?
         """
         
-        # 调用DashScope API（通义千问）
+        # 调用DashScope API（通义千问�?
         response = dashscope.Generation.call(
             model='qwen-plus',
             prompt=prompt,
@@ -380,7 +380,7 @@ class AgentBrain:
         初始回答：{initial_answer}
         
         请检查你的回答是否有误，是否需要补充更多信息？
-        如果有错误或不完整，请修正并给出更准确的回答。
+        如果有错误或不完整，请修正并给出更准确的回答�?
         """
         
         refined_answer = dashscope.Generation.call(
@@ -393,7 +393,7 @@ class AgentBrain:
 
 ---
 
-## 3. AI Agent的核心作用
+## 3. AI Agent的核心作�?
 
 ### 3.1 主要功能
 
@@ -401,29 +401,29 @@ class AgentBrain:
 |------|------|---------|
 | **智能问答** | 用户用自然语言提问，AI基于实时数据回答 | LLM推理 + Redis实时数据 |
 | **数据分析** | 自动分析秒杀成功率、库存趋势等 | 统计分析 + AI解读 |
-| **峰值预测** | 预测秒杀活动的高峰时间段 | 历史数据 + AI预测模型 |
+| **峰值预�?* | 预测秒杀活动的高峰时间段 | 历史数据 + AI预测模型 |
 | **优化建议** | 提供库存调整、限流策略等建议 | AI推理 + 最佳实践库 |
-| **自我反思** | 低置信度时自动重新思考，提升准确度 | 二次推理 + 置信度评估 |
+| **自我反�?* | 低置信度时自动重新思考，提升准确�?| 二次推理 + 置信度评�?|
 | **图像分析** | 分析商品图片质量和特征（多模态） | CV模型 + 图像识别 |
 
-### 3.2 技术亮点
+### 3.2 技术亮�?
 
-#### ✨ 1. 实时数据融合
+#### �?1. 实时数据融合
 ```python
 # AI不是凭空回答，而是基于真实的Redis实时数据
 stock1 = await redis_client.get_seckill_stock(1)  # 实时库存
 stats = await redis_client.get_seckill_stats()     # 实时统计
 ```
 
-#### ✨ 2. 自我反思机制
+#### �?2. 自我反思机�?
 ```python
-# 如果初次回答置信度<0.7，触发自我反思
+# 如果初次回答置信�?0.7，触发自我反�?
 if confidence < 0.7:
     answer = agent_brain.self_reflect(question, answer)
     confidence = min(confidence + 0.2, 0.95)
 ```
 
-#### ✨ 3. 熔断降级保护
+#### �?3. 熔断降级保护
 ```java
 // Python服务宕机时，Java端自动降级，不影响主业务流程
 if (aiServiceUnavailable) {
@@ -431,37 +431,37 @@ if (aiServiceUnavailable) {
 }
 ```
 
-#### ✨ 4. 多语言协作
+#### �?4. 多语言协作
 - **Java**: 处理高并发业务逻辑
-- **Python**: 负责AI推理和数据分析
-- **Vue**: 提供友好的用户界面
+- **Python**: 负责AI推理和数据分�?
+- **Vue**: 提供友好的用户界�?
 
 ### 3.3 实际应用场景
 
 #### 场景1: 运营人员询问库存情况
 ```
-用户问: "iPhone 15还剩多少库存？"
-AI答: "当前iPhone 15 Pro剩余库存为73件（初始100件），
-      已秒杀成功27次，成功率85%。
-      建议：库存消耗较快，如需延长活动时间可考虑补货。"
+用户�? "iPhone 15还剩多少库存�?
+AI�? "当前iPhone 15 Pro剩余库存�?3件（初始100件）�?
+      已秒杀成功27次，成功�?5%�?
+      建议：库存消耗较快，如需延长活动时间可考虑补货�?
 ```
 
 #### 场景2: 技术人员询问性能指标
 ```
-用户问: "当前秒杀成功率如何？"
-AI答: "当前总请求数32次，成功27次，失败5次，
-      成功率为84.4%。
-      失败原因主要是库存不足和限流拦截。
-      系统运行稳定，响应时间平均45ms。"
+用户�? "当前秒杀成功率如何？"
+AI�? "当前总请求数32次，成功27次，失败5次，
+      成功率为84.4%�?
+      失败原因主要是库存不足和限流拦截�?
+      系统运行稳定，响应时间平�?5ms�?
 ```
 
-#### 场景3: 管理者寻求优化建议
+#### 场景3: 管理者寻求优化建�?
 ```
-用户问: "有什么优化建议？"
-AI答: "基于当前数据分析：
+用户�? "有什么优化建议？"
+AI�? "基于当前数据分析�?
       1. 库存分配：iPhone 15消耗速度较快，建议增加库存或设置限购
-      2. 限流策略：当前10秒内每用户1次限制合理，无需调整
-      3. 峰值预测：预计接下来5分钟将迎来第二波高峰
+      2. 限流策略：当�?0秒内每用�?次限制合理，无需调整
+      3. 峰值预测：预计接下�?分钟将迎来第二波高峰
       4. 风险提示：华为Mate 60库存充足，可适当减少营销力度"
 ```
 
@@ -470,74 +470,74 @@ AI答: "基于当前数据分析：
 ## 4. 技术架构图
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                        用户浏览器                              │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │  Vue 3 Frontend (http://localhost:3000)              │   │
-│  │  ┌─────────────┐                                     │   │
-│  │  │ HomeView.vue│ → AI问答输入框 + 结果展示            │   │
-│  │  └──────┬──────┘                                     │   │
-│  └─────────┼──────────────────────────────────────────┘   │
-│            │ Axios POST /api/ai/analyze                   │
-└────────────┼──────────────────────────────────────────────┘
-             │
-             ▼
-┌─────────────────────────────────────────────────────────────┐
-│  Vite Dev Server (Proxy)                                    │
-│  /api → http://localhost:8080                               │
-└────────────┬────────────────────────────────────────────────┘
-             │
-             ▼
-┌─────────────────────────────────────────────────────────────┐
-│  Spring Cloud Gateway (http://localhost:8080)               │
-│  路由规则: /api/seckill/** → seckill-service:8084           │
-└────────────┬────────────────────────────────────────────────┘
-             │
-             ▼
-┌─────────────────────────────────────────────────────────────┐
-│  Seckill Service (http://localhost:8084)                    │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │ SeckillAIController                                  │   │
-│  │   @GetMapping("/advice")                             │   │
-│  │   ↓                                                  │   │
-│  │ AIAgentCircuitService (熔断保护)                      │   │
-│  │   ↓                                                  │   │
-│  │ AIAgentFeignClient (声明式HTTP调用)                   │   │
-│  └──────────────────┬───────────────────────────────────┘   │
-└─────────────────────┼───────────────────────────────────────┘
-                      │ HTTP POST
-                      │ http://localhost:8000/api/seckill/analyze
-                      ▼
-┌─────────────────────────────────────────────────────────────┐
-│  Python AI Agent (FastAPI, http://localhost:8000)           │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │ app/api/seckill.py                                   │   │
-│  │   @router.post("/analyze")                           │   │
-│  │   ↓                                                  │   │
-│  │ 1. 从Redis读取实时数据                                │   │
-│  │    - 库存: stock1, stock2                             │   │
-│  │    - 统计: success, fail, total                       │   │
-│  │   ↓                                                  │   │
-│  │ 2. 构建Prompt上下文                                  │   │
-│  │   ↓                                                  │   │
-│  │ 3. 调用LLM (DashScope qwen-plus)                     │   │
-│  │    agent_brain.think(question, context)              │   │
-│  │   ↓                                                  │   │
-│  │ 4. 自我反思（如果置信度<0.7）                         │   │
-│  │    agent_brain.self_reflect()                        │   │
-│  │   ↓                                                  │   │
-│  │ 5. 返回JSON响应                                      │   │
-│  └──────────────────────────────────────────────────────┘   │
-└────────────┬────────────────────────────────────────────────┘
-             │
-             ▼
-┌─────────────────────────────────────────────────────────────┐
-│  基础设施                                                     │
-│  ┌──────────────┐    ┌──────────────┐                       │
-│  │   MySQL      │    │    Redis     │                       │
-│  │  (持久化存储) │    │ (实时数据缓存)│                       │
-│  └──────────────┘    └──────────────┘                       │
-└─────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────�?
+�?                       用户浏览�?                             �?
+�? ┌──────────────────────────────────────────────────────�?  �?
+�? �? Vue 3 Frontend (http://localhost:3000)              �?  �?
+�? �? ┌─────────────�?                                    �?  �?
+�? �? �?HomeView.vue�?�?AI问答输入�?+ 结果展示            �?  �?
+�? �? └──────┬──────�?                                    �?  �?
+�? └─────────┼──────────────────────────────────────────�?  �?
+�?           �?Axios POST /api/ai/analyze                   �?
+└────────────┼──────────────────────────────────────────────�?
+             �?
+             �?
+┌─────────────────────────────────────────────────────────────�?
+�? Vite Dev Server (Proxy)                                    �?
+�? /api �?http://localhost:8080                               �?
+└────────────┬────────────────────────────────────────────────�?
+             �?
+             �?
+┌─────────────────────────────────────────────────────────────�?
+�? Spring Cloud Gateway (http://localhost:8080)               �?
+�? 路由规则: /api/seckill/** �?seckill-service:8084           �?
+└────────────┬────────────────────────────────────────────────�?
+             �?
+             �?
+┌─────────────────────────────────────────────────────────────�?
+�? Seckill Service (http://localhost:8084)                    �?
+�? ┌──────────────────────────────────────────────────────�?  �?
+�? �?SeckillAIController                                  �?  �?
+�? �?  @GetMapping("/advice")                             �?  �?
+�? �?  �?                                                 �?  �?
+�? �?AIAgentCircuitService (熔断保护)                      �?  �?
+�? �?  �?                                                 �?  �?
+�? �?AIAgentFeignClient (声明式HTTP调用)                   �?  �?
+�? └──────────────────┬───────────────────────────────────�?  �?
+└─────────────────────┼───────────────────────────────────────�?
+                      �?HTTP POST
+                      �?http://localhost:8000/api/seckill/analyze
+                      �?
+┌─────────────────────────────────────────────────────────────�?
+�? Python AI Agent (FastAPI, http://localhost:8000)           �?
+�? ┌──────────────────────────────────────────────────────�?  �?
+�? �?app/api/seckill.py                                   �?  �?
+�? �?  @router.post("/analyze")                           �?  �?
+�? �?  �?                                                 �?  �?
+�? �?1. 从Redis读取实时数据                                �?  �?
+�? �?   - 库存: stock1, stock2                             �?  �?
+�? �?   - 统计: success, fail, total                       �?  �?
+�? �?  �?                                                 �?  �?
+�? �?2. 构建Prompt上下�?                                 �?  �?
+�? �?  �?                                                 �?  �?
+�? �?3. 调用LLM (DashScope qwen-plus)                     �?  �?
+�? �?   agent_brain.think(question, context)              �?  �?
+�? �?  �?                                                 �?  �?
+�? �?4. 自我反思（如果置信�?0.7�?                        �?  �?
+�? �?   agent_brain.self_reflect()                        �?  �?
+�? �?  �?                                                 �?  �?
+�? �?5. 返回JSON响应                                      �?  �?
+�? └──────────────────────────────────────────────────────�?  �?
+└────────────┬────────────────────────────────────────────────�?
+             �?
+             �?
+┌─────────────────────────────────────────────────────────────�?
+�? 基础设施                                                     �?
+�? ┌──────────────�?   ┌──────────────�?                      �?
+�? �?  MySQL      �?   �?   Redis     �?                      �?
+�? �? (持久化存�? �?   �?(实时数据缓存)�?                      �?
+�? └──────────────�?   └──────────────�?                      �?
+└─────────────────────────────────────────────────────────────�?
 ```
 
 ---
@@ -547,7 +547,7 @@ AI答: "基于当前数据分析：
 ### 5.1 完整请求示例
 
 #### 用户操作
-在首页AI输入框中输入：**"当前库存情况如何？"**
+在首页AI输入框中输入�?*"当前库存情况如何�?**
 
 #### 前端发送的请求
 ```javascript
@@ -555,7 +555,7 @@ POST http://localhost:3000/api/ai/analyze
 Content-Type: application/json
 
 {
-  "question": "当前库存情况如何？",
+  "question": "当前库存情况如何�?,
   "enable_reflection": true
 }
 ```
@@ -563,28 +563,28 @@ Content-Type: application/json
 #### Vite代理转发
 ```
 http://localhost:3000/api/ai/analyze 
-→ http://localhost:8080/api/ai/analyze
+�?http://localhost:8080/api/ai/analyze
 ```
 
 #### Gateway路由
 ```
 http://localhost:8080/api/ai/analyze 
-→ http://localhost:8084/seckill/ai/advice?question=当前库存情况如何？
+�?http://localhost:8084/seckill/ai/advice?question=当前库存情况如何�?
 ```
 
 #### Java Controller处理
 ```java
-GET /seckill/ai/advice?question=当前库存情况如何？
+GET /seckill/ai/advice?question=当前库存情况如何�?
 
 // 构建Feign请求
 Map<String, String> request = {
-  "question": "当前库存情况如何？",
+  "question": "当前库存情况如何�?,
   "enable_reflection": "true"
 };
 
 // 调用Python服务
 POST http://localhost:8000/api/seckill/analyze
-Body: {"question": "当前库存情况如何？", "enable_reflection": true}
+Body: {"question": "当前库存情况如何�?, "enable_reflection": true}
 ```
 
 #### Python AI处理
@@ -598,38 +598,38 @@ stats = {
   "total": 32
 }
 
-# 2. 构建上下文
+# 2. 构建上下�?
 context = """
-当前秒杀实时数据：
+当前秒杀实时数据�?
 - iPhone15库存: 73
 - 华为Mate60库存: 85
-- 秒杀成功数: 27
-- 秒杀失败数: 5
-- 成功率: 84.4%
+- 秒杀成功�? 27
+- 秒杀失败�? 5
+- 成功�? 84.4%
 """
 
 # 3. 调用LLM
 prompt = """
-你是一个秒杀系统AI助手。
+你是一个秒杀系统AI助手�?
 
-实时数据：
-当前秒杀实时数据：
+实时数据�?
+当前秒杀实时数据�?
 - iPhone15库存: 73
 - 华为Mate60库存: 85
-- 秒杀成功数: 27
-- 秒杀失败数: 5
-- 成功率: 84.4%
+- 秒杀成功�? 27
+- 秒杀失败�? 5
+- 成功�? 84.4%
 
 用户问题：当前库存情况如何？
 
-请基于以上数据给出专业分析和建议。
+请基于以上数据给出专业分析和建议�?
 """
 
 # 4. LLM返回
-answer = "当前库存情况良好。iPhone 15 Pro剩余73件（消耗27%），华为Mate 60 Pro剩余85件（消耗15%）。总体成功率84.4%，系统运行稳定。"
+answer = "当前库存情况良好。iPhone 15 Pro剩余73件（消�?7%），华为Mate 60 Pro剩余85件（消�?5%）。总体成功�?4.4%，系统运行稳定�?
 confidence = 0.92
 
-# 5. 因为confidence > 0.7，不触发自我反思
+# 5. 因为confidence > 0.7，不触发自我反�?
 
 # 6. 返回响应
 return {
@@ -647,20 +647,20 @@ return {
 }
 ```
 
-#### 前端接收并展示
+#### 前端接收并展�?
 ```javascript
 // Store接收响应
 aiResult.value = {
-  answer: "当前库存情况良好。iPhone 15 Pro剩余73件...",
+  answer: "当前库存情况良好。iPhone 15 Pro剩余73�?..",
   confidence: 0.92,
   data_snapshot: {...},
   reflection_applied: false
 }
 
-// Vue渲染到页面
-<el-alert title="当前库存情况良好。iPhone 15 Pro剩余73件...">
-  <p><strong>置信度:</strong> 92.0%</p>
-  <p><strong>反思应用:</strong> 否</p>
+// Vue渲染到页�?
+<el-alert title="当前库存情况良好。iPhone 15 Pro剩余73�?..">
+  <p><strong>置信�?</strong> 92.0%</p>
+  <p><strong>反思应�?</strong> �?/p>
   <pre>{...数据快照...}</pre>
 </el-alert>
 ```
@@ -673,7 +673,7 @@ aiResult.value = {
 
 **文件**: `python-ai-agent/.env`
 ```env
-DASHSCOPE_API_KEY=sk-a7db72f5eb2d45e8ba1692da12728c06
+DASHSCOPE_API_KEY=sk-your-api-key-here
 REDIS_HOST=localhost
 REDIS_PORT=6379
 ```
@@ -692,8 +692,8 @@ spring.cloud.openfeign:
   client:
     config:
       default:
-        connectTimeout: 5000    # 连接超时5秒
-        readTimeout: 10000      # 读取超时10秒
+        connectTimeout: 5000    # 连接超时5�?
+        readTimeout: 10000      # 读取超时10�?
   circuitbreaker:
     enabled: true               # 启用熔断
 
@@ -711,29 +711,29 @@ resilience4j:
 
 ## 7. 总结
 
-### ✅ AI Agent的价值
+### �?AI Agent的价�?
 
-1. **智能化运维**: 运营人员可以用自然语言查询系统状态，无需查看数据库或日志
+1. **智能化运�?*: 运营人员可以用自然语言查询系统状态，无需查看数据库或日志
 2. **实时决策支持**: 基于真实数据给出专业建议，帮助优化秒杀策略
-3. **降低技术门槛**: 非技术人员也能理解系统运行状况
-4. **自我进化**: 通过反思机制不断提升回答质量
+3. **降低技术门�?*: 非技术人员也能理解系统运行状�?
+4. **自我进化**: 通过反思机制不断提升回答质�?
 
-### 🔧 技术特色
+### 🔧 技术特�?
 
-- **多语言协作**: Java处理业务，Python处理AI，各司其职
-- **松耦合设计**: 通过HTTP API通信，互不影响
-- **容错能力强**: 熔断降级保证主业务不受AI服务影响
-- **实时性高**: 直接从Redis读取最新数据，毫秒级响应
+- **多语言协作**: Java处理业务，Python处理AI，各司其�?
+- **松耦合设计**: 通过HTTP API通信，互不影�?
+- **容错能力�?*: 熔断降级保证主业务不受AI服务影响
+- **实时性高**: 直接从Redis读取最新数据，毫秒级响�?
 
 ### 🚀 未来扩展方向
 
-1. **更多AI功能**: 异常检测、自动调参、智能限流
-2. **多模态增强**: 商品图片审核、用户行为分析
-3. **知识库积累**: 将历史问答存入向量数据库，支持RAG检索增强
-4. **主动预警**: AI主动发现异常并推送告警
+1. **更多AI功能**: 异常检测、自动调参、智能限�?
+2. **多模态增�?*: 商品图片审核、用户行为分�?
+3. **知识库积�?*: 将历史问答存入向量数据库，支持RAG检索增�?
+4. **主动预警**: AI主动发现异常并推送告�?
 
 ---
 
-**现在你已经完全理解了AI Agent在整个系统中的角色和工作原理！** 🎉
+**现在你已经完全理解了AI Agent在整个系统中的角色和工作原理�?* 🎉
 
 *文档生成时间: 2026-05-22*

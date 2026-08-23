@@ -4,7 +4,7 @@ services:
     image: docker.m.daocloud.io/library/mysql:8.0
     container_name: seckill-mysql
     environment:
-      MYSQL_ROOT_PASSWORD: root123456
+      MYSQL_ROOT_PASSWORD: your_mysql_password
       MYSQL_DATABASE: seckill
       TZ: Asia/Shanghai
     ports:
@@ -43,7 +43,7 @@ services:
       MYSQL_SERVICE_HOST: seckill-mysql
       MYSQL_SERVICE_PORT: 3306
       MYSQL_SERVICE_USER: root
-      MYSQL_SERVICE_PASSWORD: root123456
+      MYSQL_SERVICE_PASSWORD: your_mysql_password
       MYSQL_SERVICE_DB_NAME: seckill
       MYSQL_SERVICE_PARAMS: characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&allowPublicKeyRetrieval=true
       JVM_XMS: 512m
@@ -123,7 +123,7 @@ services:
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-      - DASHSCOPE_API_KEY=${DASHSCOPE_API_KEY:-sk-a7db72f5eb2d45e8ba1692da12728c06}
+      - DASHSCOPE_API_KEY=${DASHSCOPE_API_KEY:-sk-your-api-key-here}
     depends_on:
       - redis
     networks:

@@ -1,7 +1,7 @@
 #!/bin/bash
 # ========================================
 # AI-Seckill-Hybrid 服务器初始化脚本
-# 在腾讯云服务器上执行此脚本
+# 在腾讯云服务器上执行此脚�?
 # ========================================
 
 set -e
@@ -26,7 +26,7 @@ apt install -y docker.io docker-compose
 systemctl start docker
 systemctl enable docker
 
-# 将当前用户加入docker组
+# 将当前用户加入docker�?
 usermod -aG docker $USER
 
 # 4. 安装Java 17
@@ -60,8 +60,8 @@ echo ""
 echo "下一步操作："
 echo "1. 克隆代码: git clone <你的仓库地址> ."
 echo "2. 启动基础设施: docker-compose up -d mysql redis nacos"
-echo "3. 初始化数据库: docker exec -i seckill-mysql mysql -uroot -proot123456 seckill < schema.sql"
+echo "3. 初始化数据库: docker exec -i seckill-mysql mysql -uroot -pyour_mysql_password seckill < schema.sql"
 echo "4. 编译项目: cd seckill-parent && mvn clean install -DskipTests"
-echo "5. 启动服务: 参考 DEPLOYMENT_GUIDE.md"
+echo "5. 启动服务: 参�?DEPLOYMENT_GUIDE.md"
 echo ""
 echo "========================================="

@@ -20,7 +20,7 @@ echo.
 echo [STEP 1] Please start MySQL, Redis, and Nacos manually
 echo.
 echo If using Docker, run these commands:
-echo   docker run -d --name seckill-mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root123456 -e MYSQL_DATABASE=seckill mysql:8.0
+echo   docker run -d --name seckill-mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=your_mysql_password -e MYSQL_DATABASE=seckill mysql:8.0
 echo   docker run -d --name seckill-redis -p 6379:6379 redis:7-alpine
 echo   docker run -d --name seckill-nacos -p 8848:8848 -e MODE=standalone nacos/nacos-server:v2.3.0
 echo.
@@ -29,7 +29,7 @@ pause
 echo.
 echo [STEP 2] Initialize database
 echo Run this command in terminal:
-echo   mysql -h localhost -u root -proot123456 seckill ^< seckill-parent\schema.sql
+echo   mysql -h localhost -u root -pyour_mysql_password seckill ^< seckill-parent\schema.sql
 echo.
 pause
 

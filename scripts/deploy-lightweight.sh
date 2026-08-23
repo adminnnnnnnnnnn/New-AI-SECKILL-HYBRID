@@ -1,22 +1,22 @@
 m#!/bin/bash
 # ========================================
-# AI-Seckill-Hybrid 轻量级部署脚本 (2核2G专用)
+# AI-Seckill-Hybrid 轻量级部署脚�?(2�?G专用)
 # 针对低配置服务器优化
 # ========================================
 
 set -e
 
 PROJECT_DIR="/opt/ai-seckill"
-SERVER_IP="182.254.244.202"
+SERVER_IP="YOUR_SERVER_IP"
 
 echo "========================================="
-echo "  AI-Seckill-Hybrid 轻量级部署 (2核2G)"
-echo "  服务器: $SERVER_IP"
+echo "  AI-Seckill-Hybrid 轻量级部�?(2�?G)"
+echo "  服务�? $SERVER_IP"
 echo "========================================="
 
 cd $PROJECT_DIR
 
-# 0. 增加Swap空间（重要！2G内存必须）
+# 0. 增加Swap空间（重要！2G内存必须�?
 echo "[0/7] 配置Swap空间..."
 if [ ! -f /swapfile ]; then
     echo "创建4GB Swap空间..."
@@ -25,28 +25,28 @@ if [ ! -f /swapfile ]; then
     mkswap /swapfile
     swapon /swapfile
     
-    # 设置开机自动挂载
+    # 设置开机自动挂�?
     echo '/swapfile none swap sw 0 0' >> /etc/fstab
     
     # 调整Swappiness参数
     sysctl vm.swappiness=10
     echo 'vm.swappiness=10' >> /etc/sysctl.conf
 fi
-echo "✓ Swap空间已配置"
+echo "�?Swap空间已配�?
 free -h
 
-# 1. 拉取最新代码
-echo "[1/7] 拉取最新代码..."
-git pull origin main || echo "警告: Git拉取失败，使用现有代码"
+# 1. 拉取最新代�?
+echo "[1/7] 拉取最新代�?.."
+git pull origin main || echo "警告: Git拉取失败，使用现有代�?
 
-# 2. 停止旧服务
-echo "[2/7] 停止旧服务..."
+# 2. 停止旧服�?
+echo "[2/7] 停止旧服�?.."
 docker-compose down || true
 
 # 清理未使用的Docker资源释放空间
 docker system prune -f
 
-# 3. 启动基础设施（仅MySQL和Redis）
+# 3. 启动基础设施（仅MySQL和Redis�?
 echo "[3/7] 启动基础设施(MySQL/Redis)..."
 docker-compose up -d mysql redis
 
@@ -57,41 +57,41 @@ echo "注意: 为节省内存，暂不启动Nacos，服务将使用本地配置"
 echo "等待MySQL就绪..."
 for i in {1..30}; do
     if docker exec seckill-mysql mysqladmin ping -h localhost --silent 2>/dev/null; then
-        echo "✓ MySQL已就绪"
+        echo "�?MySQL已就�?
         break
     fi
-    echo "等待中... ($i/30)"
+    echo "等待�?.. ($i/30)"
     sleep 2
 done
 
 # 4. 初始化数据库
 echo "[4/7] 检查并初始化数据库..."
-if ! docker exec seckill-mysql mysql -uroot -proot123456 -e "USE seckill;" 2>/dev/null; then
+if ! docker exec seckill-mysql mysql -uroot -pyour_mysql_password -e "USE seckill;" 2>/dev/null; then
     echo "初始化数据库..."
-    docker exec -i seckill-mysql mysql -uroot -proot123456 seckill < schema.sql
-    echo "✓ 数据库初始化完成"
+    docker exec -i seckill-mysql mysql -uroot -pyour_mysql_password seckill < schema.sql
+    echo "�?数据库初始化完成"
 else
-    echo "✓ 数据库已存在，跳过初始化"
+    echo "�?数据库已存在，跳过初始化"
 fi
 
-# 5. 编译Java项目（轻量级编译）
+# 5. 编译Java项目（轻量级编译�?
 echo "[5/7] 编译Java项目..."
 cd seckill-parent
 
-# 清理之前的编译结果释放空间
+# 清理之前的编译结果释放空�?
 mvn clean -q
 
-# 仅编译必要的模块（网关+核心服务）
+# 仅编译必要的模块（网�?核心服务�?
 echo "编译核心服务模块..."
 mvn install -pl seckill-common,seckill-gateway,seckill-user-service,seckill-product-service,seckill-order-service,seckill-seckill-service -am -DskipTests -q
 
-echo "✓ Java项目编译完成"
+echo "�?Java项目编译完成"
 cd ..
 
-# 6. 启动核心微服务（限制JVM内存）
-echo "[6/7] 启动核心微服务（优化内存配置）..."
+# 6. 启动核心微服务（限制JVM内存�?
+echo "[6/7] 启动核心微服务（优化内存配置�?.."
 
-# 定义JVM参数（限制每个服务最大256MB堆内存）
+# 定义JVM参数（限制每个服务最�?56MB堆内存）
 JVM_OPTS="-Xms128m -Xmx256m -XX:+UseSerialGC -XX:TieredStopAtLevel=1"
 
 # 创建日志目录
@@ -141,13 +141,13 @@ nohup java $JVM_OPTS \
 echo $! > /tmp/seckill-service.pid
 sleep 3
 
-echo "✓ 核心微服务已启动"
+echo "�?核心微服务已启动"
 
 # 7. 启动前端（生产模式）
-echo "[7/7] 构建并启动前端..."
+echo "[7/7] 构建并启动前�?.."
 cd seckill-frontend
 
-# 安装依赖（如果未安装）
+# 安装依赖（如果未安装�?
 if [ ! -d "node_modules" ]; then
     npm install --production
 fi
@@ -167,7 +167,7 @@ echo "========================================="
 echo "  轻量级部署完成！"
 echo "========================================="
 echo ""
-echo "访问地址："
+echo "访问地址�?
 echo "  前端界面: http://$SERVER_IP:5173"
 echo "  API网关:  http://$SERVER_IP:8080"
 echo ""
@@ -175,16 +175,16 @@ echo "服务状态："
 echo "  查看进程: ps aux | grep java"
 echo "  查看日志: tail -f logs/gateway.log"
 echo ""
-echo "停止服务："
+echo "停止服务�?
 echo "  ./scripts/stop-lightweight.sh"
 echo ""
-echo "资源使用情况："
+echo "资源使用情况�?
 free -h
 echo ""
 echo "========================================="
-echo "  注意事项："
-echo "  1. 已启用4GB Swap空间缓解内存压力"
+echo "  注意事项�?
+echo "  1. 已启�?GB Swap空间缓解内存压力"
 echo "  2. JVM堆内存限制为256MB/服务"
-echo "  3. 仅启动核心服务，其他服务已禁用"
-echo "  4. 如遇到OOM，请考虑升级服务器配置"
+echo "  3. 仅启动核心服务，其他服务已禁�?
+echo "  4. 如遇到OOM，请考虑升级服务器配�?
 echo "========================================="

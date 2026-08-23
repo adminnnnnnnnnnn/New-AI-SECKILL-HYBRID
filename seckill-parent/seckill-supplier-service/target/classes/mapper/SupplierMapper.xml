@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seckill.supplier.mapper.SupplierMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.seckill.supplier.entity.Supplier">
+        <id column="id" property="id" />
+        <result column="supplier_code" property="supplierCode" />
+        <result column="supplier_name" property="supplierName" />
+        <result column="credit_code" property="creditCode" />
+        <result column="legal_person" property="legalPerson" />
+        <result column="contact_phone" property="contactPhone" />
+        <result column="email" property="email" />
+        <result column="address" property="address" />
+        <result column="status" property="status" />
+        <result column="rating" property="rating" />
+        <result column="score" property="score" />
+        <result column="cooperation_date" property="cooperationDate" />
+        <result column="settlement_cycle" property="settlementCycle" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, supplier_code, supplier_name, credit_code, legal_person, 
+        contact_phone, email, address, status, rating, score, 
+        cooperation_date, settlement_cycle, create_time, update_time
+    </sql>
+
+    <!-- 根据供应商编码查询 -->
+    <select id="selectBySupplierCode" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM supplier
+        WHERE supplier_code = #{supplierCode}
+    </select>
+
+    <!-- 根据统一社会信用代码查询 -->
+    <select id="selectByCreditCode" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM supplier
+        WHERE credit_code = #{creditCode}
+    </select>
+
+    <!-- 查询待审核的供应商 -->
+    <select id="selectPendingSuppliers" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM supplier
+        WHERE status = 0
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 查询合作中的供应商 -->
+    <select id="selectActiveSuppliers" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM supplier
+        WHERE status = 1
+        ORDER BY score DESC
+    </select>
+
+    <!-- 更新供应商评级 -->
+    <update id="updateRating">
+        UPDATE supplier
+        SET rating = #{rating},
+            score = #{score},
+            update_time = NOW()
+        WHERE id = #{id}
+    </update>
+
+</mapper>
